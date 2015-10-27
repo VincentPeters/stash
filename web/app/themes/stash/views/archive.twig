@@ -5,7 +5,9 @@
         <article class="post-type-archive">
             <section class="article-content">
                 <div class="article-body">
-                    <p>Sorry, we couldn't find what you're looking for.</p>
+                    {% for post in posts %}
+                        {% include ['tease-'~post.post_type~'.twig', 'tease.twig'] %}
+                    {% endfor %}
                 </div>
             </section>
         </article>

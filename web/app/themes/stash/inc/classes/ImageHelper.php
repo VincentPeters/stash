@@ -1,5 +1,5 @@
 <?php
-namespace Undefined\Stash;
+namespace Undefined\Stash\Helpers;
 
 class ImageHelper
 {

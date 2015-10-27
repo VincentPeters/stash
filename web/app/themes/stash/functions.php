@@ -4,6 +4,7 @@ namespace Undefined\Stash;
 use TimberMenu;
 use TimberSite;
 use Twig_Extension_StringLoader;
+use Undefined\Stash\Helpers\ImageHelper;
 
 if (!class_exists('Timber')) {
     add_action('admin_notices', function () {
@@ -19,6 +20,8 @@ include_once 'inc/functions/advancedCustomSearch.php';
 
 /* Include classes */
 include_once 'inc/classes/ImageHelper.php';
+include_once 'inc/classes/MainController.php';
+include_once 'inc/classes/ControllerRouter.php';
 
 class Stash extends TimberSite
 {
@@ -36,6 +39,7 @@ class Stash extends TimberSite
         add_action('init', [$this, 'registerTaxonomies']);
         add_action('init', [$this, 'removeEmojiSupport']);
         add_action('init', [$this, 'acfSearch']);
+        add_action('init', [$this, 'loadControllers']);
 
         add_action('wp_enqueue_scripts', [$this, 'themeAssets']);
 
@@ -65,7 +69,6 @@ class Stash extends TimberSite
     function registerTaxonomies()
     {
         //this is where you can register custom taxonomies
-
     }
 
     /**
@@ -75,6 +78,16 @@ class Stash extends TimberSite
     {
         remove_action('wp_head', 'print_emoji_detection_script', 7);
         remove_action('wp_print_styles', 'print_emoji_styles');
+    }
+
+    /**
+     * Register all controllers
+     */
+    function loadControllers()
+    {
+        foreach (glob(__DIR__ . "/controllers/*.php") as $filename) {
+            include_once $filename;
+        }
     }
 
     /**
@@ -150,7 +163,7 @@ class Stash extends TimberSite
      */
     function addPageClass($classes)
     {
-        if (!is_archive() && !is_home()) {
+        if (is_singular()) {
             global $post;
             $classes[] = get_post($post)->post_name;
         }
